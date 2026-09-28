@@ -1,6 +1,8 @@
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import org.example.calculatePay
+import org.example.Employee
+import org.example.PayrollUsecase
+import org.example.org.example.EmployeePort
 
 // 時間給
 //  時間×時給
@@ -14,21 +16,43 @@ import org.example.calculatePay
 //  基本給 + (売上 * 歩合率）
 //  支払うタイミング：隔週金曜
 
+// payroll実行 date
+// DBからEmployee取得
+// 対象かどうか
+// 計算
+// 給与支払い
+// 実行ログ
+
 class MainTest : FreeSpec({
+    "生成" {
+        val port = MockEmployeeGateway()
+        val usecase = PayrollUsecase(port)
+
+        usecase.execute() shouldBe listOf(Employee(1, "John"), Employee(2, "Mary"))
+    }
+
     "時間給" - {
-        "毎週金曜に支払われる" {
-
-        }
-
-        "Aliceは時給2000円で40時間働いた" {
-            calculatePay().contains("Alice" to 80000) shouldBe true
-        }
-
-        "Bobは時給2000円で20時間働いた" {
-            calculatePay().contains("Bob" to 40000) shouldBe true
-        }
+//        "毎週金曜に支払われる" {
+//        }
+//
+//        "Aliceは時給2000円で40時間働いた" {
+//            calculatePay().contains("Alice" to 80000) shouldBe true
+//        }
+//
+//        "Bobは時給2000円で20時間働いた" {
+//            calculatePay().contains("Bob" to 40000) shouldBe true
+//        }
 
 
 
     }
 })
+
+class MockEmployeeGateway: EmployeePort {
+    override fun allEmployees(): List<Employee> {
+        return listOf(
+            Employee(1, "John"),
+            Employee(2, "Mary"),
+        )
+    }
+}

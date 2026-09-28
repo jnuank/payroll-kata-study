@@ -1,9 +1,11 @@
 package org.example
 
-fun calculatePay(): List<Pair<String, Int>> {
-    val rows = hourlyCsv.lines().map { it.split(",") }
-    return rows.map {
-        it[0] to it[2].toInt() * it[3].toInt()
+import org.example.org.example.EmployeePort
+
+class PayrollUsecase(val port: EmployeePort) {
+    fun execute(): List<Employee> {
+        val employees = port.allEmployees()
+        return employees
     }
 }
 
