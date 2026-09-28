@@ -25,10 +25,17 @@ import org.example.org.example.PayRollEventPort
 // 実行ログ
 
 class MainTest : FreeSpec({
+    lateinit var portMock: MockEmployeeGateway
+    lateinit var payrollEventPortMock: MockPayrollEventPort
+    lateinit var usecase: PayrollUsecase
+
+    beforeEach {
+        portMock = MockEmployeeGateway()
+        payrollEventPortMock = MockPayrollEventPort()
+        usecase = PayrollUsecase(portMock, payrollEventPortMock)
+    }
+
     "生成" {
-        val portMock = MockEmployeeGateway()
-        val payrollEventPortMock = MockPayrollEventPort()
-        val usecase = PayrollUsecase(portMock, payrollEventPortMock)
 
         usecase.execute()
 
