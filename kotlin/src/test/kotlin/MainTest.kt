@@ -1,6 +1,6 @@
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import org.example.payroll
+import org.example.calculatePay
 
 // 時間給
 //  時間×時給
@@ -16,12 +16,19 @@ import org.example.payroll
 
 class MainTest : FreeSpec({
     "時間給" - {
+        "毎週金曜に支払われる" {
+
+        }
+
         "Aliceは時給2000円で40時間働いた" {
-            payroll().contains("Alice" to 80000) shouldBe true
+            calculatePay().contains("Alice" to 80000) shouldBe true
         }
 
         "Bobは時給2000円で20時間働いた" {
-            payroll().contains("Bob" to 40000) shouldBe true
+            calculatePay().contains("Bob" to 40000) shouldBe true
         }
+
+
+
     }
 })
