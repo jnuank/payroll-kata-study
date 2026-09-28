@@ -16,12 +16,12 @@ import org.example.payroll
 
 class MainTest : FreeSpec({
     "時間給" - {
-        "時給2000円の人が40時間働いたとき" {
-            payroll(40) shouldBe 80000
+        "Aliceは時給2000円で40時間働いた" {
+            payroll().contains("Alice" to 80000) shouldBe true
         }
 
-        "時給2000円の人が20時間働いたとき" {
-            payroll(20) shouldBe 40000
+        "Bobは時給2000円で20時間働いた" {
+            payroll().contains("Bob" to 40000) shouldBe true
         }
     }
 })
