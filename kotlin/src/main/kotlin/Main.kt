@@ -1,13 +1,17 @@
 package org.example
 
 import org.example.org.example.EmployeePort
+import org.example.org.example.PayRollEventPort
 
-class PayrollUsecase(val port: EmployeePort) {
-    fun execute(): List<Employee> {
+class PayrollUsecase(val port: EmployeePort, val payrollEventPort: PayRollEventPort) {
+    fun execute(): Unit {
         val employees = port.allEmployees()
-        return employees
+        employees.forEach {
+            payrollEventPort.payed(it)
+        }
     }
 }
+
 
 
 

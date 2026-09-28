@@ -3,6 +3,7 @@ import io.kotest.matchers.shouldBe
 import org.example.Employee
 import org.example.PayrollUsecase
 import org.example.org.example.EmployeePort
+import org.example.org.example.PayRollEventPort
 
 // 時間給
 //  時間×時給
@@ -25,15 +26,23 @@ import org.example.org.example.EmployeePort
 
 class MainTest : FreeSpec({
     "生成" {
-        val port = MockEmployeeGateway()
-        val usecase = PayrollUsecase(port)
+        val portMock = MockEmployeeGateway()
+        val payrollEventPortMock = MockPayrollEventPort()
+        val usecase = PayrollUsecase(portMock, payrollEventPortMock)
 
-        usecase.execute() shouldBe listOf(Employee(1, "John"), Employee(2, "Mary"))
+        usecase.execute()
+
+        payrollEventPortMock.getEmployee() shouldBe listOf(
+            Employee(1, "John"),
+            Employee(2, "Mary"),
+        )
+        payrollEventPortMock.calledCount shouldBe 2
     }
 
     "時間給" - {
-//        "毎週金曜に支払われる" {
-//        }
+        "毎週金曜に支払われる" {
+
+        }
 //
 //        "Aliceは時給2000円で40時間働いた" {
 //            calculatePay().contains("Alice" to 80000) shouldBe true
@@ -47,6 +56,21 @@ class MainTest : FreeSpec({
 
     }
 })
+
+class MockPayrollEventPort: PayRollEventPort {
+    private val employees = mutableListOf<Employee>()
+    var calledCount: Int = 0
+
+    override fun payed(employee: Employee) {
+        employees.add(employee)
+        calledCount++
+    }
+
+    fun getEmployee(): List<Employee> {
+        return employees
+    }
+
+}
 
 class MockEmployeeGateway: EmployeePort {
     override fun allEmployees(): List<Employee> {
