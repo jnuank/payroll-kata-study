@@ -19,5 +19,9 @@ class MainTest : FreeSpec({
         "時給2000円の人が40時間働いたとき" {
             payroll(40) shouldBe 80000
         }
+
+        "時給2000円の人が20時間働いたとき" {
+            payroll(20) shouldBe 40000
+        }
     }
 })
