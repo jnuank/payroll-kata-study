@@ -1,9 +1,12 @@
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.example.Employee
+import org.example.HourlyEmployee
 import org.example.PayrollUsecase
+import org.example.SalaryEmployee
 import org.example.org.example.EmployeePort
 import org.example.org.example.PayRollEventPort
+import java.time.LocalDate
 
 // 時間給
 //  時間×時給
@@ -35,21 +38,27 @@ class MainTest : FreeSpec({
         usecase = PayrollUsecase(portMock, payrollEventPortMock)
     }
 
-    "生成" {
-
-        usecase.execute()
-
-        payrollEventPortMock.getEmployee() shouldBe listOf(
-            Employee(1, "John"),
-            Employee(2, "Mary"),
-        )
-        payrollEventPortMock.calledCount shouldBe 2
-    }
 
     "時間給" - {
         "毎週金曜に支払われる" {
+            usecase.execute(LocalDate.of(2026, 10, 2))
+
+            payrollEventPortMock.events() shouldBe listOf(
+                HourlyEmployee(1, "John"),
+            )
+
+            payrollEventPortMock.calledCount shouldBe 1
 
         }
+
+        "金曜じゃなければ支払われない" {
+            usecase.execute(LocalDate.of(2026, 10, 1))
+
+            payrollEventPortMock.events() shouldBe emptyList()
+
+            payrollEventPortMock.calledCount shouldBe 0
+        }
+
 //
 //        "Aliceは時給2000円で40時間働いた" {
 //            calculatePay().contains("Alice" to 80000) shouldBe true
@@ -59,8 +68,12 @@ class MainTest : FreeSpec({
 //            calculatePay().contains("Bob" to 40000) shouldBe true
 //        }
 
+    }
 
+    "月給" - {
+        "月末に支払われる" {
 
+        }
     }
 })
 
@@ -73,7 +86,7 @@ class MockPayrollEventPort: PayRollEventPort {
         calledCount++
     }
 
-    fun getEmployee(): List<Employee> {
+    fun events(): List<Employee> {
         return employees
     }
 
@@ -82,8 +95,8 @@ class MockPayrollEventPort: PayRollEventPort {
 class MockEmployeeGateway: EmployeePort {
     override fun allEmployees(): List<Employee> {
         return listOf(
-            Employee(1, "John"),
-            Employee(2, "Mary"),
+            HourlyEmployee(1, "John"),
+            SalaryEmployee(2, "Mary"),
         )
     }
 }
