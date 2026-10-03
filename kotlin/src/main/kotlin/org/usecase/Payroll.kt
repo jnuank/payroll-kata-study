@@ -1,15 +1,17 @@
-package org.example
+package org.example.org.usecase
 
-import org.example.org.example.EmployeePort
-import org.example.org.example.PayRollEventPort
+import org.example.org.usecase.port.EmployeePort
+import org.example.org.usecase.port.PayRollEventPort
+import org.example.org.usecase.port.PaymentPort
 import java.time.LocalDate
 
-class PayrollUsecase(val port: EmployeePort, val payrollEventPort: PayRollEventPort) {
+class PayrollUsecase(private val port: EmployeePort, private val payrollEventPort: PayRollEventPort,  private val paymentPort: PaymentPort) {
     fun execute(date: LocalDate) {
         val employees = port.allEmployees()
         employees.forEach { employee ->
             if(employee.isPaymentDueOn(date)) {
-
+                val pay = employee.calcPay()
+                paymentPort.pay(pay)
                 payrollEventPort.payed(employee)
             }
         }

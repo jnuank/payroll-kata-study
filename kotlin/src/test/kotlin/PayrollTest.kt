@@ -1,11 +1,13 @@
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import org.example.Employee
-import org.example.HourlyEmployee
-import org.example.PayrollUsecase
-import org.example.SalaryEmployee
-import org.example.org.example.EmployeePort
-import org.example.org.example.PayRollEventPort
+import org.example.org.domain.Employee
+import org.example.org.domain.HourlyEmployee
+import org.example.org.domain.Payment
+import org.example.org.usecase.PayrollUsecase
+import org.example.org.domain.SalaryEmployee
+import org.example.org.usecase.port.EmployeePort
+import org.example.org.usecase.port.PayRollEventPort
+import org.example.org.usecase.port.PaymentPort
 import java.time.LocalDate
 
 // 時間給
@@ -31,11 +33,13 @@ class PayrollTest : FreeSpec({
     lateinit var portMock: MockEmployeeGateway
     lateinit var payrollEventPortMock: MockPayrollEventPort
     lateinit var usecase: PayrollUsecase
+    lateinit var paymentPort: MockPaymentGateway
 
     beforeEach {
         portMock = MockEmployeeGateway()
         payrollEventPortMock = MockPayrollEventPort()
-        usecase = PayrollUsecase(portMock, payrollEventPortMock)
+        paymentPort = MockPaymentGateway()
+        usecase = PayrollUsecase(portMock, payrollEventPortMock, paymentPort)
     }
 
 
@@ -56,13 +60,16 @@ class PayrollTest : FreeSpec({
 
             payrollEventPortMock.events() shouldBe emptyList()
 
+
             payrollEventPortMock.calledCount shouldBe 0
         }
 
         "時給と時間で計算して、送る" {
             usecase.execute(LocalDate.of(2026, 10, 2))
 
-
+            paymentPort.payments shouldBe listOf(
+                Payment(1, 20000)
+            )
         }
 
 
@@ -106,5 +113,13 @@ class MockEmployeeGateway: EmployeePort {
             HourlyEmployee(1, "John"),
             SalaryEmployee(2, "Mary"),
         )
+    }
+}
+
+class MockPaymentGateway: PaymentPort {
+     val payments = mutableListOf<Payment>()
+
+    override fun pay(payment: Payment) {
+        payments += payment
     }
 }
