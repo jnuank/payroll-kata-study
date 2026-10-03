@@ -27,7 +27,7 @@ import java.time.LocalDate
 // 給与支払い
 // 実行ログ
 
-class MainTest : FreeSpec({
+class PayrollTest : FreeSpec({
     lateinit var portMock: MockEmployeeGateway
     lateinit var payrollEventPortMock: MockPayrollEventPort
     lateinit var usecase: PayrollUsecase
@@ -58,6 +58,13 @@ class MainTest : FreeSpec({
 
             payrollEventPortMock.calledCount shouldBe 0
         }
+
+        "時給と時間で計算する" {
+            usecase.execute(LocalDate.of(2026, 10, 2))
+
+
+        }
+
 
 
 //
