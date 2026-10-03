@@ -3,10 +3,9 @@ import io.kotest.matchers.shouldBe
 import org.example.org.domain.Employee
 import org.example.org.domain.HourlyEmployee
 import org.example.org.domain.Payment
-import org.example.org.usecase.PayrollUsecase
 import org.example.org.domain.SalaryEmployee
+import org.example.org.usecase.PayrollUsecase
 import org.example.org.usecase.port.EmployeePort
-import org.example.org.usecase.port.PayRollEventPort
 import org.example.org.usecase.port.PaymentPort
 import java.time.LocalDate
 
@@ -33,9 +32,8 @@ class PayrollTest : FreeSpec({
 
     fun payrollWith(employees: List<Employee>): Pair<PayrollUsecase, MockPaymentGateway> {
         val employeePortMock = StubEmployeeGateway(employees)
-        val payrollEventPortMock = MockPayrollEventPort()
         val paymentPort = MockPaymentGateway()
-        val usecase = PayrollUsecase(employeePortMock, payrollEventPortMock, paymentPort)
+        val usecase = PayrollUsecase(employeePortMock, paymentPort)
         return usecase to paymentPort
     }
 
@@ -89,20 +87,6 @@ class PayrollTest : FreeSpec({
     }
 })
 
-class MockPayrollEventPort: PayRollEventPort {
-    private val employees = mutableListOf<Employee>()
-    var calledCount: Int = 0
-
-    override fun payed(employee: Employee) {
-        employees.add(employee)
-        calledCount++
-    }
-
-    fun events(): List<Employee> {
-        return employees
-    }
-
-}
 
 class StubEmployeeGateway(
     val employees: List<Employee>
