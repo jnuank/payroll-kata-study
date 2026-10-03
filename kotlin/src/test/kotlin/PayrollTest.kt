@@ -40,19 +40,18 @@ class PayrollTest : FreeSpec({
     }
 
     "時間給" - {
-        "毎週金曜に支払われる" {
+        "金曜は時間給の従業員が支払い対象になる" {
+            val john = HourlyEmployee(1, "John", 1000, 20)
+            val mary = SalaryEmployee(2, "Mary")
+            val friday = LocalDate.of(2026, 10, 2)
+
             val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
-                HourlyEmployee(1, "John", 1, 1),
-                SalaryEmployee(2, "Mary"),
+                john, mary
             ))
 
-            usecase.execute(LocalDate.of(2026, 10, 2))
+            usecase.execute(friday)
 
-            payrollEventPortMock.events() shouldBe listOf(
-                HourlyEmployee(1, "John", 1, 1),
-            )
-
-            payrollEventPortMock.calledCount shouldBe 1
+            payrollPort.paidEmployeeIds shouldBe listOf(john.id)
 
         }
 
@@ -64,9 +63,7 @@ class PayrollTest : FreeSpec({
 
             usecase.execute(LocalDate.of(2026, 10, 1))
 
-            payrollEventPortMock.events() shouldBe emptyList()
-
-            payrollEventPortMock.calledCount shouldBe 0
+            payrollPort.paidEmployeeIds shouldBe emptyList()
         }
 
         "時給と時間で計算して、送る" {
@@ -119,4 +116,6 @@ class MockPaymentGateway: PaymentPort {
     override fun pay(payment: Payment) {
         payments += payment
     }
+
+    val paidEmployeeIds: List<Int> get() = payments.map { it.employeeId }
 }
