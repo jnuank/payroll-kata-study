@@ -31,7 +31,6 @@ import java.time.LocalDate
 
 class PayrollTest : FreeSpec({
 
-
     fun payrollWith(employees: List<Employee>): Triple<PayrollUsecase, MockPaymentGateway, MockPayrollEventPort> {
         val employeePortMock = StubEmployeeGateway(employees)
         val payrollEventPortMock = MockPayrollEventPort()
@@ -43,14 +42,14 @@ class PayrollTest : FreeSpec({
     "時間給" - {
         "毎週金曜に支払われる" {
             val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
-                HourlyEmployee(1, "John"),
+                HourlyEmployee(1, "John", 1, 1),
                 SalaryEmployee(2, "Mary"),
             ))
 
             usecase.execute(LocalDate.of(2026, 10, 2))
 
             payrollEventPortMock.events() shouldBe listOf(
-                HourlyEmployee(1, "John"),
+                HourlyEmployee(1, "John", 1, 1),
             )
 
             payrollEventPortMock.calledCount shouldBe 1
@@ -59,7 +58,7 @@ class PayrollTest : FreeSpec({
 
         "金曜じゃなければ支払われない" {
             val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
-                HourlyEmployee(1, "John"),
+                HourlyEmployee(1, "John", 1, 1),
                 SalaryEmployee(2, "Mary"),
             ))
 
@@ -72,14 +71,15 @@ class PayrollTest : FreeSpec({
 
         "時給と時間で計算して、送る" {
             val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
-                HourlyEmployee(1, "John"),
-                SalaryEmployee(2, "Mary"),
+                HourlyEmployee(1, "John", 1000, 20),
+                HourlyEmployee(2, "Doe", 2000, 20),
             ))
 
             usecase.execute(LocalDate.of(2026, 10, 2))
 
             payrollPort.payments shouldBe listOf(
                 Payment(1, 20000),
+                Payment(2, 40000),
             )
         }
 
