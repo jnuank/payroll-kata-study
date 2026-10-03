@@ -83,17 +83,6 @@ class PayrollTest : FreeSpec({
             )
         }
 
-
-
-//
-//        "Aliceは時給2000円で40時間働いた" {
-//            calculatePay().contains("Alice" to 80000) shouldBe true
-//        }
-//
-//        "Bobは時給2000円で20時間働いた" {
-//            calculatePay().contains("Bob" to 40000) shouldBe true
-//        }
-
     }
 
     "月給" - {
