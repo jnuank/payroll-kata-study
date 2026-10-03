@@ -30,25 +30,22 @@ import java.time.LocalDate
 // 実行ログ
 
 class PayrollTest : FreeSpec({
-    lateinit var portMock: MockEmployeeGateway
-    lateinit var payrollEventPortMock: MockPayrollEventPort
-    lateinit var usecase: PayrollUsecase
-    lateinit var paymentPort: MockPaymentGateway
 
-    beforeEach {
-        portMock = MockEmployeeGateway()
-        payrollEventPortMock = MockPayrollEventPort()
-        paymentPort = MockPaymentGateway()
-        usecase = PayrollUsecase(portMock, payrollEventPortMock, paymentPort)
+
+    fun payrollWith(employees: List<Employee>): Triple<PayrollUsecase, MockPaymentGateway, MockPayrollEventPort> {
+        val employeePortMock = StubEmployeeGateway(employees)
+        val payrollEventPortMock = MockPayrollEventPort()
+        val paymentPort = MockPaymentGateway()
+        val usecase = PayrollUsecase(employeePortMock, payrollEventPortMock, paymentPort)
+        return Triple(usecase, paymentPort, payrollEventPortMock)
     }
-
 
     "時間給" - {
         "毎週金曜に支払われる" {
-            portMock.employees = mutableListOf(
+            val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
                 HourlyEmployee(1, "John"),
                 SalaryEmployee(2, "Mary"),
-            )
+            ))
 
             usecase.execute(LocalDate.of(2026, 10, 2))
 
@@ -61,10 +58,10 @@ class PayrollTest : FreeSpec({
         }
 
         "金曜じゃなければ支払われない" {
-            portMock.employees = mutableListOf(
+            val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
                 HourlyEmployee(1, "John"),
                 SalaryEmployee(2, "Mary"),
-            )
+            ))
 
             usecase.execute(LocalDate.of(2026, 10, 1))
 
@@ -74,14 +71,14 @@ class PayrollTest : FreeSpec({
         }
 
         "時給と時間で計算して、送る" {
-            portMock.employees = mutableListOf(
+            val (usecase, payrollPort, payrollEventPortMock) = payrollWith(listOf(
                 HourlyEmployee(1, "John"),
                 SalaryEmployee(2, "Mary"),
-            )
+            ))
 
             usecase.execute(LocalDate.of(2026, 10, 2))
 
-            paymentPort.payments shouldBe listOf(
+            payrollPort.payments shouldBe listOf(
                 Payment(1, 20000),
             )
         }
@@ -121,12 +118,10 @@ class MockPayrollEventPort: PayRollEventPort {
 
 }
 
-class MockEmployeeGateway: EmployeePort {
-    var employees = mutableListOf<Employee>()
-
-    override fun allEmployees(): List<Employee> {
-        return employees
-    }
+class StubEmployeeGateway(
+    val employees: List<Employee>
+): EmployeePort {
+    override fun allEmployees(): List<Employee> = employees
 }
 
 class MockPaymentGateway: PaymentPort {
