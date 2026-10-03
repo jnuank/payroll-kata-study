@@ -7,8 +7,11 @@ import java.time.LocalDate
 class PayrollUsecase(val port: EmployeePort, val payrollEventPort: PayRollEventPort) {
     fun execute(date: LocalDate): Unit {
         val employees = port.allEmployees()
-        employees.forEach {
-            if(it.isPayDay(date)) payrollEventPort.payed(it)
+        employees.forEach { employee ->
+            if(employee.isPayDay(date)) {
+                
+                payrollEventPort.payed(employee)
+            }
         }
     }
 }

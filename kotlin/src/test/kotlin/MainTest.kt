@@ -59,6 +59,7 @@ class MainTest : FreeSpec({
             payrollEventPortMock.calledCount shouldBe 0
         }
 
+
 //
 //        "Aliceは時給2000円で40時間働いた" {
 //            calculatePay().contains("Alice" to 80000) shouldBe true
