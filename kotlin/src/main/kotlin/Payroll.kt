@@ -5,11 +5,11 @@ import org.example.org.example.PayRollEventPort
 import java.time.LocalDate
 
 class PayrollUsecase(val port: EmployeePort, val payrollEventPort: PayRollEventPort) {
-    fun execute(date: LocalDate): Unit {
+    fun execute(date: LocalDate) {
         val employees = port.allEmployees()
         employees.forEach { employee ->
-            if(employee.isPayDay(date)) {
-                
+            if(employee.isPaymentDueOn(date)) {
+
                 payrollEventPort.payed(employee)
             }
         }

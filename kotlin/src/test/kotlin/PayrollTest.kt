@@ -59,7 +59,7 @@ class PayrollTest : FreeSpec({
             payrollEventPortMock.calledCount shouldBe 0
         }
 
-        "時給と時間で計算する" {
+        "時給と時間で計算して、送る" {
             usecase.execute(LocalDate.of(2026, 10, 2))
 
 

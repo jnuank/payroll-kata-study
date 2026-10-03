@@ -6,17 +6,17 @@ import java.time.LocalDate
 interface Employee {
     val id: Int
     val name: String
-    fun isPayDay(date: LocalDate): Boolean
+    fun isPaymentDueOn(date: LocalDate): Boolean
 }
 
 data class HourlyEmployee(override val id: Int, override val name: String): Employee {
-    override fun isPayDay(date: LocalDate): Boolean {
+    override fun isPaymentDueOn(date: LocalDate): Boolean {
         return date.dayOfWeek == DayOfWeek.FRIDAY
     }
 }
 
 data class SalaryEmployee(override val id: Int, override val name: String): Employee {
-    override fun isPayDay(date: LocalDate): Boolean {
+    override fun isPaymentDueOn(date: LocalDate): Boolean {
         return false
     }
 
