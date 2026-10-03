@@ -45,6 +45,11 @@ class PayrollTest : FreeSpec({
 
     "時間給" - {
         "毎週金曜に支払われる" {
+            portMock.employees = mutableListOf(
+                HourlyEmployee(1, "John"),
+                SalaryEmployee(2, "Mary"),
+            )
+
             usecase.execute(LocalDate.of(2026, 10, 2))
 
             payrollEventPortMock.events() shouldBe listOf(
@@ -56,19 +61,28 @@ class PayrollTest : FreeSpec({
         }
 
         "金曜じゃなければ支払われない" {
+            portMock.employees = mutableListOf(
+                HourlyEmployee(1, "John"),
+                SalaryEmployee(2, "Mary"),
+            )
+
             usecase.execute(LocalDate.of(2026, 10, 1))
 
             payrollEventPortMock.events() shouldBe emptyList()
-
 
             payrollEventPortMock.calledCount shouldBe 0
         }
 
         "時給と時間で計算して、送る" {
+            portMock.employees = mutableListOf(
+                HourlyEmployee(1, "John"),
+                SalaryEmployee(2, "Mary"),
+            )
+
             usecase.execute(LocalDate.of(2026, 10, 2))
 
             paymentPort.payments shouldBe listOf(
-                Payment(1, 20000)
+                Payment(1, 20000),
             )
         }
 
@@ -108,11 +122,10 @@ class MockPayrollEventPort: PayRollEventPort {
 }
 
 class MockEmployeeGateway: EmployeePort {
+    var employees = mutableListOf<Employee>()
+
     override fun allEmployees(): List<Employee> {
-        return listOf(
-            HourlyEmployee(1, "John"),
-            SalaryEmployee(2, "Mary"),
-        )
+        return employees
     }
 }
 
