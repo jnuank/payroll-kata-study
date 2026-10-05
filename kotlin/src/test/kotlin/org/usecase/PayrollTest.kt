@@ -1,9 +1,7 @@
 package org.usecase
 
-import com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNot
 import org.example.org.domain.Employee
 import org.example.org.domain.Payment
 import org.example.org.usecase.PayrollUsecase
@@ -11,10 +9,6 @@ import org.example.org.usecase.port.EmployeePort
 import org.example.org.usecase.port.PaymentPort
 import org.junit.jupiter.api.fail
 import java.time.LocalDate
-
-// 時間給
-//  時間×時給
-//  支払うタイミング：週末の金曜
 
 // 月給
 //  月給固定
