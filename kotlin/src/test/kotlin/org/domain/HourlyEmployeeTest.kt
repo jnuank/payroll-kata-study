@@ -28,6 +28,4 @@ class HourlyEmployeeTest : StringSpec({
     "給与は時間×働いた時間" {
         john.calcPay() shouldBe Payment(employeeId = 1, 20_000)
     }
-
-
 })
