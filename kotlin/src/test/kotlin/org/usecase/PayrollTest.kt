@@ -1,5 +1,6 @@
 package org.usecase
 
+import com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.example.org.domain.Employee
@@ -56,24 +57,18 @@ class PayrollTest : FreeSpec({
     }
 
     "支払い対象外の従業員は給与計算を行わない" {
-        var calcPayCalls: Int = 0
-
         val employee = object: Employee {
             override val id = 1
             override val name = "Zod"
             override fun isPaymentDueOn(date: LocalDate) = false
 
-            override fun calcPay(): Payment {
-                calcPayCalls++
-                return fail("呼ばれてはいけない")
-            }
+            override fun calcPay(): Payment =
+                error("should not be called")
         }
 
         val (usecase, _) = payrollWith(listOf(employee))
 
         usecase.execute(LocalDate.of(2026, 10, 1))
-
-        calcPayCalls shouldBe 0
     }
 })
 
