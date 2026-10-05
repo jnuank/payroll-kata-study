@@ -1,10 +1,9 @@
 package org.domain
 
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.matchers.equality.shouldBeEqualToComparingFields
 import io.kotest.matchers.shouldBe
 import org.example.org.domain.HourlyEmployee
+import org.example.org.domain.Payment
 import java.time.LocalDate
 
 class HourlyEmployeeTest : StringSpec({
@@ -25,5 +24,10 @@ class HourlyEmployeeTest : StringSpec({
         val thursday = LocalDate.of(2026, 10, 1)
         john.isPaymentDueOn(thursday) shouldBe false
     }
+
+    "給与は時間×働いた時間" {
+        john.calcPay() shouldBe Payment(employeeId = 1, 20_000)
+    }
+
 
 })

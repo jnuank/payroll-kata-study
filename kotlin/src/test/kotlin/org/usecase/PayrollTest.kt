@@ -30,7 +30,11 @@ import java.time.LocalDate
 // 給与支払い
 // 実行ログ
 
-// payrollのuseaseを見て
+// payrollのusecaseを見て、社員の契約によって判断をする
+// その社員が、支払い対象だったら、計算をして、支払う
+// 社員の属性は期にするけど、支払い処理を行うユースケースにおいては、支払い対象かどうか・支払いの金額計算・送るの3点
+
+
 
 class PayrollTest : FreeSpec({
 
