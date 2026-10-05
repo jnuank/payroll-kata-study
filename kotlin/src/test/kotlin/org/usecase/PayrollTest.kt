@@ -1,3 +1,5 @@
+package org.usecase
+
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import org.example.org.domain.Employee
@@ -27,6 +29,8 @@ import java.time.LocalDate
 // 計算
 // 給与支払い
 // 実行ログ
+
+// payrollのuseaseを見て
 
 class PayrollTest : FreeSpec({
 
