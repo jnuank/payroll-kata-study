@@ -2,7 +2,6 @@ package org.example.org.domain
 
 import java.time.DayOfWeek
 import java.time.LocalDate
-import kotlin.time.times
 
 interface Employee {
     val id: Int
@@ -26,13 +25,13 @@ data class HourlyEmployee(
     }
 }
 
-data class SalaryEmployee(override val id: Int, override val name: String) : Employee {
+data class SalaryEmployee(override val id: Int, override val name: String, val salary: Int) : Employee {
     override fun isPaymentDueOn(date: LocalDate): Boolean {
-        return false
+        return date.dayOfMonth == date.lengthOfMonth()
     }
 
     override fun calcPay(): Payment {
-        TODO("Not yet implemented")
+        return Payment(id, salary)
     }
 
 }

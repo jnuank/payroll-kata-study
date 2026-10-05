@@ -4,11 +4,9 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
-import io.kotest.property.arbitrary.localDate
 import io.kotest.property.checkAll
 import org.example.org.domain.HourlyEmployee
 import org.example.org.domain.Payment
-import java.time.DayOfWeek
 import java.time.LocalDate
 
 class HourlyEmployeeTest : StringSpec({
@@ -24,9 +22,16 @@ class HourlyEmployeeTest : StringSpec({
     }
 
     "金曜日だけが支払日" {
-        checkAll(Arb.localDate()) { date ->
-            println("$date: ${date.dayOfWeek}")
-            john.isPaymentDueOn(date) shouldBe (date.dayOfWeek == DayOfWeek.FRIDAY)
+        val friday = LocalDate.of(2026, 10, 2)
+        checkAll(Arb.int(-1000..1000)) { weeks ->
+            val paymentDue = friday.plusWeeks(weeks.toLong())
+
+            john.isPaymentDueOn(paymentDue) shouldBe true
+
+            for (offset in 1L..6L){
+                john.isPaymentDueOn(paymentDue.plusDays(offset)) shouldBe false
+            }
+
         }
     }
 })
