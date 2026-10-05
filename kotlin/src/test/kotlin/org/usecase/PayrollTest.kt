@@ -56,12 +56,6 @@ class PayrollTest : FreeSpec({
             Payment(1, 100_000)
         )
     }
-
-    "月給" - {
-        "月末に支払われる" {
-
-        }
-    }
 })
 
 data class MockEmployee(
@@ -73,7 +67,6 @@ data class MockEmployee(
     override fun isPaymentDueOn(date: LocalDate): Boolean = isPayment
 
     override fun calcPay(): Payment = Payment(id, payment)
-
 }
 
 class StubEmployeeGateway(
@@ -88,5 +81,4 @@ class MockPaymentGateway : PaymentPort {
     override fun pay(payment: Payment) {
         payments += payment
     }
-
 }
